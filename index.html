@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AJ Smart Display</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,sans-serif;
+}
+
+body{
+
+background:linear-gradient(180deg,#090909,#181818);
+color:white;
+height:100vh;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+overflow:hidden;
+}
+
+.container{
+
+text-align:center;
+width:100%;
+
+}
+
+#time{
+
+font-size:110px;
+font-weight:700;
+
+}
+
+#date{
+
+font-size:34px;
+opacity:.8;
+margin-bottom:20px;
+
+}
+
+#weather{
+
+font-size:28px;
+margin-bottom:70px;
+opacity:.9;
+
+}
+
+.buttons{
+
+display:flex;
+justify-content:center;
+gap:35px;
+
+}
+
+.music{
+
+width:170px;
+height:170px;
+
+border:none;
+border-radius:35px;
+
+background:#1e1e1e;
+
+cursor:pointer;
+
+transition:.25s;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+box-shadow:0 15px 40px rgba(0,0,0,.35);
+
+}
+
+.music:hover{
+
+transform:translateY(-8px) scale(1.05);
+
+}
+
+.music img{
+
+width:85px;
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div id="time"></div>
+
+<div id="date"></div>
+
+<div id="weather">Loading weather...</div>
+
+<div class="buttons">
+
+<button class="music"
+onclick="window.location='https://music.apple.com';">
+
+<img src="https://imgs.search.brave.com/89chqcHCvQElOJqx0D8QY05S2YRSkD6tA9ALQ1ZFTjE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNTUv/MTM4LzQ4NS9zbWFs/bC9hcHBsZS1tdXNp/Yy1sb2dvLWNvbG9y/ZnVsbC1hcHBsZS1t/dXNpYy1sb2dvLWFw/cGxlLW11c2ljLWxv/Z28tZnJlZS1kb3du/bG9hZC1mcmVlLXBu/Zy5wbmc">
+
+</button>
+
+<button class="music"
+onclick="window.location='https://music.amazon.com';">
+
+<img src="https://imgs.search.brave.com/ZnwcdiKfDmceC6DaNedgmKyOzJSNgr5V8eAz81ammC0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hc3Nl/dHMuc3RpY2twbmcu/Y29tL3RodW1icy82/MmIxZTgwNDU2YjY4/NDhmOGJlYzkwMzYu/cG5n">
+
+</button>
+
+<button class="music"
+onclick="window.location='https://open.spotify.com';">
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Spotify_icon.svg">
+
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+function updateClock(){
+
+const now=new Date();
+
+document.getElementById("time").innerHTML=
+now.toLocaleTimeString([],{
+hour:'numeric',
+minute:'2-digit'
+});
+
+document.getElementById("date").innerHTML=
+now.toLocaleDateString([],{
+weekday:'long',
+month:'long',
+day:'numeric'
+});
+
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+
+// Uses your browser location
+navigator.geolocation.getCurrentPosition(async(position)=>{
+
+const lat=position.coords.latitude;
+const lon=position.coords.longitude;
+
+const weather=await fetch(
+`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`
+);
+
+const data=await weather.json();
+
+document.getElementById("weather").innerHTML=
+`${Math.round(data.current.temperature_2m)}°F`;
+
+},()=>{
+
+document.getElementById("weather").innerHTML="Location unavailable";
+
+});
+
+</script>
+
+</body>
+</html>
